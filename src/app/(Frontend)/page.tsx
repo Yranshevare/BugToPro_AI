@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import React from 'react';
 
 export default function LandingPage() {
   return (
@@ -10,7 +9,7 @@ export default function LandingPage() {
           <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             BugToPro AI
           </div>
-          <Link href={"/Signin"}  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors">
+          <Link href={"/Auth"}  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors">
             Sign In
           </Link>
         </div>
