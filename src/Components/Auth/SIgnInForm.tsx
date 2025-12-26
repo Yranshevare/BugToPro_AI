@@ -13,27 +13,33 @@ const signInSchema = z.object({
 });
 
 export function SIgnInForm() {
-    const {register, handleSubmit,formState: { errors, isSubmitting }} = useForm({ resolver: zodResolver(signInSchema) });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        setError,
+    } = useForm({ resolver: zodResolver(signInSchema) });
 
     const router = useRouter();
 
     const handleGoogleAuth = async (formData: { email: string; password: string }) => {
         const { email, password } = formData;
 
-        // const { data, error } = await supabase.auth.signInWithPassword({
-        //     email,
-        //     password,
-        // });
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-        // if (error) {
-        //     console.error("Sign in error:", error.message);
-        //     alert(error.message);
-        // } else {
-        //     console.log("Signed in:", data.user);
-        //     router.push("/dashboard");
-        // }
-        alert("Google OAuth initiated");
-        console.log("Google OAuth initiated", formData);
+        if (error) {
+            // console.error("Sign in error:", error.message);
+            // alert(error.message);
+            setError("password", { message: error.message });
+        } else {
+            // console.log("Signed in:", data.user);
+            router.push("/dashboard");
+        }
+
+        // console.log("Google OAuth initiated", formData);
     };
     return (
         <form onSubmit={handleSubmit(handleGoogleAuth)} className="space-y-5">
@@ -76,6 +82,7 @@ export function SIgnInForm() {
             >
                 {isSubmitting ? "Signing In..." : "Sign In"}
             </button>
+            {errors.root && <p className="text-red-500 text-[12px] mt-1 text-center">{errors.root.message}</p>}
         </form>
     );
 }

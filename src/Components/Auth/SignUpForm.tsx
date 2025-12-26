@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 
 const signInSchema = z.object({
     name: z.string("please enter your name"),
@@ -11,16 +12,17 @@ const signInSchema = z.object({
 });
 
 export function SIgnUpForm() {
+    const [isSignInComplete, setIsSignInComplete] = useState<boolean>(false);
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-        setError
+        setError,
     } = useForm({ resolver: zodResolver(signInSchema) });
 
-    const handleGoogleAuth = async(formData: { email: string; password: string; name: string; confirmPassword: string }) => {
+    const handleGoogleAuth = async (formData: { email: string; password: string; name: string; confirmPassword: string }) => {
         const { email, password, name, confirmPassword } = formData;
-        if(password !== confirmPassword){
+        if (password !== confirmPassword) {
             setError("confirmPassword", { message: "Password does not match" });
             return;
         }
@@ -36,14 +38,21 @@ export function SIgnUpForm() {
 
         if (error) {
             console.error("Sign up error:", error.message);
-            alert(error.message);
+            // alert(error.message);
+            setError("root", { message: "error while signing up" });
         } else {
             console.log("Check email for confirmation:", data);
-            alert("Check your email to confirm!");
+            // alert("Check your email to confirm!");
+            setIsSignInComplete(true);
         }
-        
+
         console.log("Google OAuth initiated", formData);
     };
+    if(isSignInComplete){
+        return(
+             <p className="block text-lg font-medium text-gray-300 text-center">Check your email to confirm!</p>
+        )
+    }
     return (
         <form onSubmit={handleSubmit(handleGoogleAuth)} className="space-y-5">
             <div>
@@ -97,6 +106,7 @@ export function SIgnUpForm() {
             >
                 {isSubmitting ? "Signing Up..." : "Sign Up"}
             </button>
+            {errors.root && <p className="text-red-500 text-[12px] mt-1 text-center">{errors.root.message}</p>}
 
             <p className="mt-6 text-center text-xs text-gray-400">
                 By creating an account, you agree to our{" "}

@@ -1,9 +1,14 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
 
 export default function SignInDashboardBut() {
-    const user = localStorage.getItem(`sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_NAME}-auth-token`);
+    const [user, setUser] = useState<string | null>(null);
+
+    useEffect(() => {
+        setUser(localStorage.getItem(`sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_NAME}-auth-token`) || null);
+    },[])
     return (
         <div>
             {
