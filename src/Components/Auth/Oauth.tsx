@@ -6,7 +6,7 @@ export function Google() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${window.location.origin}/Signin`, // Works everywhere!
+                redirectTo: `${window.location.origin}/dashboard`, // Works everywhere!
             },
         });
 

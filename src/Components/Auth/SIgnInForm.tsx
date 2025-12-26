@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/lib/supabaseClient";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const signInSchema = z.object({
     email: z.string().email("provide a valid email address"),
@@ -14,21 +15,24 @@ const signInSchema = z.object({
 export function SIgnInForm() {
     const {register, handleSubmit,formState: { errors, isSubmitting }} = useForm({ resolver: zodResolver(signInSchema) });
 
+    const router = useRouter();
+
     const handleGoogleAuth = async (formData: { email: string; password: string }) => {
         const { email, password } = formData;
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
+        // const { data, error } = await supabase.auth.signInWithPassword({
+        //     email,
+        //     password,
+        // });
 
-        if (error) {
-            console.error("Sign in error:", error.message);
-            alert(error.message);
-        } else {
-            console.log("Signed in:", data.user);
-            // router.push("/dashboard");
-        }
+        // if (error) {
+        //     console.error("Sign in error:", error.message);
+        //     alert(error.message);
+        // } else {
+        //     console.log("Signed in:", data.user);
+        //     router.push("/dashboard");
+        // }
+        alert("Google OAuth initiated");
         console.log("Google OAuth initiated", formData);
     };
     return (
