@@ -64,11 +64,11 @@ export function SIgnInForm() {
                 />
                 {errors.password && <p className="text-red-500 text-[12px] mt-1">{errors.password.message}</p>}
             </div>
-            <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center text-gray-400">
+            <div className="flex items-center justify-end text-sm">
+                {/* <label className="flex items-center text-gray-400">
                     <input type="checkbox" className="w-4 h-4 rounded border-gray-700 bg-gray-900 text-blue-600 focus:ring-2 focus:ring-blue-600" />
                     <span className="ml-2">Remember me</span>
-                </label>
+                </label> */}
                 <Link href={"Auth/ForgetPassword"} type="button" className="text-blue-400 hover:text-blue-300 transition-colors">
                     Forgot password?
                 </Link>

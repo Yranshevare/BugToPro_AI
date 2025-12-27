@@ -1,48 +1,163 @@
 "use client";
+import TopicCard from "@/Components/Dashboard/TopicCard";
 import { supabase } from "@/lib/supabaseClient";
-import React, { useEffect } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import UserIcon from "@/Components/Dashboard/UserIcon";
 
-export default function page() {
-    // const {data: { user },} = await supabase.auth.getUser();
-    // console.log(user);
+interface Topic {
+    id: string;
+    name: string;
+    category: string;
+    status: "In Progress" | "Completed" | "Paused";
+    progress: number;
+    lastActivity: string;
+}
+
+export default function LearningDashboard() {
+    const [userinfo, setUserInfo] = useState({name:"", email:""});
+
     const router = useRouter();
+    
+    const activeTopics: Topic[] = [
+        {
+            id: "1",
+            name: "Java Data Structures",
+            category: "Java",
+            status: "In Progress",
+            progress: 65,
+            lastActivity: "Last updated 2 days ago",
+        },
+        {
+            id: "2",
+            name: "Python Algorithms",
+            category: "Python",
+            status: "In Progress",
+            progress: 40,
+            lastActivity: "Last updated 5 days ago",
+        },
+        {
+            id: "3",
+            name: "JavaScript Fundamentals",
+            category: "JavaScript",
+            status: "Paused",
+            progress: 25,
+            lastActivity: "Last updated 2 weeks ago",
+        },
+    ];
 
-    const fetchData = async () => {
-        const sessionStr = localStorage.getItem(`sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_NAME}-auth-token`);
-        console.log("Stored session:", sessionStr); // Check if full session
+    const completedTopics: Topic[] = [
+        {
+            id: "4",
+            name: "Git Version Control",
+            category: "DevOps",
+            status: "Completed",
+            progress: 100,
+            lastActivity: "Completed 1 month ago",
+        },
+        {
+            id: "5",
+            name: "SQL Basics",
+            category: "Database",
+            status: "Completed",
+            progress: 100,
+            lastActivity: "Completed 2 months ago",
+        },
+    ];
 
-        if (!sessionStr) return;
-
-        const session = JSON.parse(sessionStr);
-        console.log("Token being sent:", session.access_token); // Should be long JWT
-
-        const res = await fetch("http://localhost:3000/api/chekloginuser", {
-            headers: { Authorization: `Bearer ${session.access_token}` },
-        });
-
-        console.log("Full response:", await res.json());
-    };
     useEffect(() => {
-        fetchData();
-    });
-    const handleLogout = async () => {
-        const { error } = await supabase.auth.signOut();
-
-        if (error) {
-            console.error("Logout error:", error);
-        } else {
-            console.log("Logged out successfully");
-            // Optional: manual redirect (onAuthStateChange will also handle)
-            router.push("/");
-            router.refresh();
+        const data = localStorage.getItem(`sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_NAME}-auth-token`);
+        if(!data) {
+            router.replace("/Auth");
+            return;
         }
-    };
+
+        const {name, email} = JSON.parse(data!).user.user_metadata;
+        setUserInfo({name: name, email: email});
+        console.log(name, email);
+    }, []);
+
     return (
-        <div>
-            <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded">
-                Logout
-            </button>
+        <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+            {/* Top Navbar */}
+            <nav className="bg-gray-900/80 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">BugToPro AI</div>
+                    <div className="flex items-center gap-4">
+                        <button
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add New Repo
+                        </button>
+                        {/* <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold cursor-pointer">
+                            {userinfo.name?.slice(0, 1).toLocaleUpperCase() || ""}
+                        </div> */}
+                        <UserIcon user={userinfo}/>
+                    </div>
+                </div>
+            </nav>
+
+            {/* Main Content */}
+            <div className="max-w-7xl mx-auto px-6 py-12">
+                {/* Page Header */}
+                <div className="mb-12">
+                    <h1 className="text-4xl font-bold text-white mb-2">Your Learning Dashboard</h1>
+                    <p className="text-gray-400 text-lg">Manage your learning topics and track progress</p>
+                </div>
+
+                {/* Active Topics Section */}
+                {activeTopics.length > 0 && (
+                    <div className="mb-16">
+                        <h2 className="text-2xl font-bold text-white mb-6">Active Repo</h2>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {activeTopics.map((topic) => (
+                                <TopicCard key={topic.id} topic={topic} />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Completed Topics Section */}
+                {completedTopics.length > 0 && (
+                    <div className="mb-16">
+                        <h2 className="text-2xl font-bold text-white mb-6">Completed Repo</h2>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {completedTopics.map((topic) => (
+                                <TopicCard key={topic.id} topic={topic} />
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Empty State */}
+                {activeTopics.length === 0 && completedTopics.length === 0 && (
+                    <div className="text-center py-20">
+                        <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg className="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                                />
+                            </svg>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white mb-2">You haven't added any learning topics yet.</h3>
+                        <p className="text-gray-400 mb-8">Start your coding journey by adding your first topic</p>
+                        <button
+                            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add Your First Topic
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
