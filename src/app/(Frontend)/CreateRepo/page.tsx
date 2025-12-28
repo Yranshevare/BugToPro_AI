@@ -18,6 +18,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/Components/ui/alert-dialog";
+import axios from "axios";
 
 const schema = z.object({
     topic: z.string().min(1, "please provide a topic"),
@@ -55,9 +56,15 @@ export default function CreateRepo() {
         setExtraInfo(data.addition_info);
 
         setIsFormSubmitted(true);
+        try {
+            const res = await axios.post("/api/GetOverview", data);
+            console.log(res.data.data);
+            setAiRoadmap(`${res.data.data.res}`);
+            
+        } catch (error) {
+            console.log(error)
+        }
 
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        setAiRoadmap(aiResponse);
     };
 
     function OnError(errors: any) {
@@ -600,7 +607,7 @@ export default function CreateRepo() {
                                 </h2>
                                 <div className="prose prose-invert max-w-none">
                                     {aiRoadmap ? (
-                                        <div className="text-gray-300 leading-relaxed whitespace-pre-line">{aiRoadmap}</div>
+                                        <pre className="text-gray-300 leading-relaxed whitespace-pre-line">{aiRoadmap}</pre>
                                     ) : (
                                         <div className="text-gray-300 leading-relaxed whitespace-pre-line flex gap-2 items-center ">
                                             <LoaderCircle className="animate-spin text-white " />
