@@ -20,6 +20,7 @@ import {
 } from "@/Components/ui/alert-dialog";
 import axios from "axios";
 import message from "./response";
+import { supabase } from "@/lib/supabaseClient";
 
 const schema = z.object({
     topic: z.string().min(1, "please provide a topic"),
@@ -103,16 +104,36 @@ export default function CreateRepo() {
     }
 
     async function InitializeRepo() {
-        setRepoStatus(1);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        setRepoStatus(2);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        setRepoStatus(3);
+        try {
+            setRepoStatus(1);
+
+            const { data: { session } } = await supabase.auth.getSession();
+
+            const eventSource = new EventSource(`/api/GenerateStructuredOutput?roadmap=${aiRoadmap}&token=${session?.access_token}`);
+
+            eventSource.onmessage = (event) => {
+                console.log("Message from server:", event.data);
+                if (JSON.parse(event.data).message === "convert the data to json") {
+                    setRepoStatus(2);
+                }
+                if (JSON.parse(event.data).message === "Stream finished") {
+                    console.log("Stream finished");
+                    eventSource.close();
+                    setRepoStatus(3);
+                }
+            };
+            eventSource.onerror = (error) => {
+                console.error("EventSource failed:", error);
+                eventSource.close();
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async function MakeChanges() {
         if (changes.trim() === "") return;
-        if(!aiRoadmap) return;
+        if (!aiRoadmap) return;
         // setAiRoadmap(null);
         const data = {
             topic,
