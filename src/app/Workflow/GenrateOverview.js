@@ -24,21 +24,7 @@ graph.addNode("GenerateOverview", GenerateOverview);
 graph.addEdge(START, "GenerateOverview");
 graph.addEdge("GenerateOverview", END);
 
-const workflow = graph.compile();
-
-
-async function GenerateOverviewWorkflow(data){
-    const {title, timeline, understanding, goal, extraInfo} = data
-    const humanPrompt = await humanMessage.format({title, timeline, understanding, goal, extraInfo})
-    // console.log(humanPrompt);
-    const messages = [
-        new SystemMessage(systemMessage),
-        new HumanMessage(humanPrompt)
-    ]
-
-    const res = await workflow.invoke({messages});
-    return res.messages.at(-1).content;
-} 
+const GenerateOverviewWorkflow = graph.compile();
 
 export default GenerateOverviewWorkflow
 
