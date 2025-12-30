@@ -109,7 +109,7 @@ export default function CreateRepo() {
 
             const { data: { session } } = await supabase.auth.getSession();
 
-            const eventSource = new EventSource(`/api/GenerateStructuredOutput?roadmap=${aiRoadmap}&token=${session?.access_token}`);
+            const eventSource = new EventSource(`/api/GenerateStructuredOutput?roadmap=${aiRoadmap}&token=${session?.access_token}&title=${topic}`);
 
             eventSource.onmessage = (event) => {
                 console.log("Message from server:", event.data);

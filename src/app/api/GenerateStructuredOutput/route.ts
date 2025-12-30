@@ -3,11 +3,13 @@ import { NextRequest } from "next/server";
 import GenerateStructuredOutputWorkflow from "../../Workflow/GenrateStructuredOutput";
 import fs from "fs/promises";
 import { supabaseServer } from "@/lib/supabaseServer";
+import prisma from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
     try {
         const roadmap = await req.nextUrl.searchParams.get("roadmap");
         const token = await req.nextUrl.searchParams.get("token");
+        const title = await req.nextUrl.searchParams.get("title");
 
         if (!token) {
             console.log("No token provided in Authorization header");
@@ -39,14 +41,26 @@ export async function GET(req: NextRequest) {
                 const data = await fs.readFile("src/app/api/GenerateStructuredOutput/response.json", "utf-8");
                 const res = JSON.parse(data).data;
 
+                res.output.forEach((task: any, index: number) => {
+                    // task.asg == ['que1, que2'] to task.asg = [{question: 'que1'}, {question: 'que2'}]
+                    const asgArray = task.assignments.map((asgItem: string) => ({ question: asgItem }));
+                    task.assignments = asgArray;
+                });
+
                 await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay for llm call
 
                 controller.enqueue(`data: {"message":"convert the data to json"}\n\n`);
 
-                res.user = { name: user.user_metadata.name, email: user.user_metadata.email, id: user.id };
+                const savedData = await prisma.repo.create({
+                    data: {
+                        title: title || "Untitled Repo",
+                        user: { name: user.user_metadata.name, email: user.user_metadata.email, id: user.id },
+                        tasks: res.output,
+                    },
+                });
+                console.log("Saved data to DB:", savedData.id);
 
-                await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay for db write
-                controller.enqueue(`data: {"message": "Stream finished"}\n\n`);
+                controller.enqueue(`data: {"message": "Stream finished", "id": "${savedData.id}"}\n\n`);
                 controller.close();
             },
 
