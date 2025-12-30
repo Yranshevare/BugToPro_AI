@@ -1,0 +1,230 @@
+{
+    "message": "Structured Output generated successfully",
+    "data": {
+        "input": "Here is a task-based learning roadmap overview to help you prepare for Java job opportunities, starting from a complete beginner level.\\n\\n**Task 1: Setting Up Your Java Environment**\\n*   **What you will study or practice:** Understand what Java is, its history, and its applications. Learn how to install the Java Development Kit (JDK) and set up a basic Integrated Development Environment (IDE) like IntelliJ IDEA or Eclipse.\\n*   **Estimated time required:** 1 hour\\n\\n**Task 2: Introduction to Java and Basic Syntax**\\n*   **What you will study or practice:** Learn the structure of a basic Java program, how to compile and run it. Understand comments, identifiers, and keywords.\\n*   **Estimated time required:** 2 hours\\n\\n**Task 3: Variables, Data Types, and Operators**\\n*   **What you will study or practice:** Explore primitive data types (int, boolean, char, double, etc.) and reference data types. Understand how to declare and initialize variables. Learn about various operators (arithmetic, relational, logical, assignment).\\n*   **Estimated time required:** 3 hours\\n\\n**Task 4: Control Flow: Conditional Statements**\\n*   **What you will study or practice:** Learn how to make decisions in your code using `if`, `if-else`, `else-if` ladder, and `switch` statements.\\n*   **Estimated time required:** 3 hours\\n\\n**Task 5: Control Flow: Loops**\\n*   **What you will study or practice:** Understand how to repeat blocks of code using `for`, `while`, and `do-while` loops. Learn about `break` and `continue` statements.\\n*   **Estimated time required:** 3 hours\\n\\n**Task 6: Methods and Function Fundamentals**\\n*   **What you will study or practice:** Learn to define and call methods, understand method parameters, return types, and method overloading.\\n*   **Estimated time required:** 3 hours\\n\\n**Task 7: Introduction to Object-Oriented Programming (OOP) Concepts**\\n*   **What you will study or practice:** Understand the core principles of OOP: Encapsulation, Inheritance, Polymorphism, and Abstraction.\\n*   **Estimated time required:** 2 hours\\n\\n**Task 8: Classes and Objects**\\n*   **What you will study or practice:** Learn how to define classes, create objects, and understand the difference between a class and an object.\\n*   **Estimated time required:** 3 hours\\n\\n**Task 9: Constructors and the `this` Keyword**\\n*   **What you will study or practice:** Understand what constructors are, how to define them, and constructor overloading. Learn the purpose and usage of the `this` keyword.\\n*   **Estimated time required:** 2 hours\\n\\n**Task 10: Encapsulation: Access Modifiers**\\n*   **What you will study or practice:** Learn about access modifiers (`public`, `private`, `protected`, default) and how to use getters and setters to achieve encapsulation.\\n*   **Estimated time required:** 2 hours\\n\\n**Task 11: Inheritance**\\n*   **What you will study or practice:** Understand how to create subclasses and superclasses using the `extends` keyword. Learn about method overriding and the `super` keyword.\\n*   **Estimated time required:** 3 hours\\n\\n**Task 12: Polymorphism**\\n*   **What you will study or practice:** Explore runtime and compile-time polymorphism. Understand method overloading (revisit) and method overriding (revisit) in the context of polymorphism.\\n*   **Estimated time required:** 3 hours\\n\\n**Task 13: Abstraction: Abstract Classes and Methods**\\n*   **What you will study or practice:** Learn about abstract classes and abstract methods, and when to use them to achieve abstraction.\\n*   **Estimated time required:** 2 hours\\n\\n**Task 14: Interfaces**\\n*   **What you will study or practice:** Understand interfaces, their purpose, and how to implement them. Learn the differences between abstract classes and interfaces.\\n*   **Estimated time required:** 2 hours\\n\\n**Task 15: Working with Strings**\\n*   **What you will study or practice:** Explore the `String` class, common string methods, and string manipulation techniques.\\n*   **Estimated time required:** 2 hours\\n\\n**Task 16: Arrays**\\n*   **What you will study or practice:** Learn to declare, initialize, and manipulate one-dimensional and multi-dimensional arrays.\\n*   **Estimated time required:** 2 hours\\n\\n**Task 17: Introduction to Collections Framework**\\n*   **What you will study or practice:** Get an overview of the Java Collections Framework. Understand and practice with basic `List` (e.g., `ArrayList`), `Set` (e.g., `HashSet`), and `Map` (e.g., `HashMap`) interfaces and their common implementations.\\n*   **Estimated time required:** 4 hours\\n\\n**Task 18: Exception Handling**\\n*   **What you will study or practice:** Learn about errors and exceptions, how to use `try-catch-finally` blocks, and `throws` keyword for handling runtime issues gracefully.\\n*   **Estimated time required:** 3 hours\\n\\n**Task 19: Review of Core Java Concepts**\\n*   **What you will study or practice:** Consolidate your understanding of all fundamental Java and OOP concepts. Identify areas for further practice.\\n*   **Estimated time required:** 3 hours\\n\\n**Task 20: Preparing for Java Interviews: Common Topics**\\n*   **What you will study or practice:** Understand typical questions asked in junior Java developer interviews covering OOP, data types, control flow, and basic collections.\\n*   **Estimated time required:** 2 hours\\n\\n---\\n\\n**Total number of tasks:** 20\\n**Total estimated time to complete all tasks:** 49 hours\\n\\nDoes this task plan match your learning goal and available time, or would you like to request any changes?",
+        "output": [
+            {
+                "taskNumber": 1,
+                "taskTitle": "Setting Up Your Java Environment",
+                "taskDescription": "Learners will understand what Java is, its history, and applications, then install the Java Development Kit (JDK) and set up an Integrated Development Environment (IDE) such as IntelliJ IDEA or Eclipse.",
+                "estimatedTime": "1 hour",
+                "assignments": [
+                    "Explain the primary purpose of the Java Development Kit (JDK) for Java application development.",
+                    "Describe the role of an Integrated Development Environment (IDE) in a Java developer's workflow and name two popular IDEs for Java.",
+                    "What are the key benefits of using an IDE like IntelliJ IDEA or Eclipse for writing and managing Java code?"
+                ]
+            },
+            {
+                "taskNumber": 2,
+                "taskTitle": "Introduction to Java and Basic Syntax",
+                "taskDescription": "Learners will study the structure of a basic Java program, how to compile and run it, and understand concepts like comments, identifiers, and keywords.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Write a basic Java program that prints \"Hello, Java World!\" to the console.",
+                    "Explain the difference between a single-line comment and a multi-line comment in Java, providing an example for each.",
+                    "Describe the steps involved in compiling and running a simple Java program from the command line."
+                ]
+            },
+            {
+                "taskNumber": 3,
+                "taskTitle": "Variables, Data Types, and Operators",
+                "taskDescription": "Learners will explore primitive data types (int, boolean, char, double) and reference data types, learn to declare and initialize variables, and understand various operators (arithmetic, relational, logical, assignment).",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Declare variables of primitive data types `int`, `double`, `boolean`, and `char` in a Java program and initialize them with appropriate values.",
+                    "Write a Java program that demonstrates the use of arithmetic, relational, and logical operators with at least one example for each.",
+                    "Explain the fundamental difference between primitive data types and reference data types in Java."
+                ]
+            },
+            {
+                "taskNumber": 4,
+                "taskTitle": "Control Flow: Conditional Statements",
+                "taskDescription": "Learners will learn how to make decisions in code using `if`, `if-else`, `else-if` ladder, and `switch` statements.",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Write a Java program that takes an integer score as input and prints 'Pass' if the score is 60 or above, otherwise 'Fail' using an `if-else` statement.",
+                    "Implement a Java program that determines if a given year is a leap year using `if-else if-else` statements (a leap year is divisible by 4, but not by 100 unless it is also divisible by 400).",
+                    "Create a Java program that takes an integer representing a day of the week (1 for Monday, 7 for Sunday) and prints the day's name using a `switch` statement."
+                ]
+            },
+            {
+                "taskNumber": 5,
+                "taskTitle": "Control Flow: Loops",
+                "taskDescription": "Learners will understand how to repeat blocks of code using `for`, `while`, and `do-while` loops, and learn about `break` and `continue` statements.",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Write a Java program to print the first 10 even numbers using a `for` loop.",
+                    "Implement a Java program that calculates the factorial of a given positive integer using a `while` loop.",
+                    "Create a Java program that prompts the user to enter numbers until they enter 0, using a `do-while` loop and demonstrating the `break` statement if the sum exceeds 100."
+                ]
+            },
+            {
+                "taskNumber": 6,
+                "taskTitle": "Methods and Function Fundamentals",
+                "taskDescription": "Learners will learn to define and call methods, understand method parameters, return types, and method overloading.",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Write a Java method named `calculateProduct` that takes two `int` parameters and returns their product. Demonstrate calling this method from the `main` method.",
+                    "Implement two overloaded methods named `displayMessage` in Java: one that takes no arguments and prints \"Default Message\", and another that takes a `String` argument and prints the given string.",
+                    "Explain the significance of a method's return type in Java and how it affects the interaction between the calling and called methods."
+                ]
+            },
+            {
+                "taskNumber": 7,
+                "taskTitle": "Introduction to Object-Oriented Programming (OOP) Concepts",
+                "taskDescription": "Learners will understand the core principles of OOP: Encapsulation, Inheritance, Polymorphism, and Abstraction.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Explain the four core principles of Object-Oriented Programming (OOP) in Java.",
+                    "Describe how Encapsulation contributes to modularity and data protection in OOP.",
+                    "Provide a brief comparison of Inheritance and Polymorphism, highlighting their main purposes in OOP."
+                ]
+            },
+            {
+                "taskNumber": 8,
+                "taskTitle": "Classes and Objects",
+                "taskDescription": "Learners will learn how to define classes, create objects, and understand the difference between a class and an object.",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Define a Java class named `Book` with attributes `title` (String) and `author` (String).",
+                    "In a `main` method, create two objects of the `Book` class, assign values to their attributes, and print them.",
+                    "Explain the fundamental difference between a 'class' and an 'object' in Java, using a relevant analogy."
+                ]
+            },
+            {
+                "taskNumber": 9,
+                "taskTitle": "Constructors and the `this` Keyword",
+                "taskDescription": "Learners will understand what constructors are, how to define them, and constructor overloading, along with the purpose and usage of the `this` keyword.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Modify the `Book` class from Task 8 to include a default constructor and a parameterized constructor that initializes `title` and `author`.",
+                    "Create two `Book` objects: one using the default constructor and another using the parameterized constructor, then print their details.",
+                    "Explain the primary use of the `this` keyword in Java, particularly in the context of instance variables and constructors."
+                ]
+            },
+            {
+                "taskNumber": 10,
+                "taskTitle": "Encapsulation: Access Modifiers",
+                "taskDescription": "Learners will learn about access modifiers (`public`, `private`, `protected`, default) and how to use getters and setters to achieve encapsulation.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Update the `Book` class by making the `title` and `author` attributes `private`.",
+                    "Implement `public` getter and setter methods for the `private` `title` and `author` attributes in the `Book` class to enforce encapsulation.",
+                    "Explain the role of the `private` access modifier in Java and how getter and setter methods help maintain encapsulation."
+                ]
+            },
+            {
+                "taskNumber": 11,
+                "taskTitle": "Inheritance",
+                "taskDescription": "Learners will understand how to create subclasses and superclasses using the `extends` keyword, and learn about method overriding and the `super` keyword.",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Create a Java class `Animal` with a method `makeSound()`. Then, create a subclass `Dog` that `extends` `Animal` and overrides the `makeSound()` method to print \"Woof!\".",
+                    "In the overridden `makeSound()` method of the `Dog` class, demonstrate how to call the superclass's `makeSound()` method using the `super` keyword before printing \"Woof!\".",
+                    "Explain the concept of inheritance in Java and provide an example of when it is beneficial to use it in a program."
+                ]
+            },
+            {
+                "taskNumber": 12,
+                "taskTitle": "Polymorphism",
+                "taskDescription": "Learners will explore runtime and compile-time polymorphism, revisiting method overloading and method overriding in this context.",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Write a Java program to demonstrate compile-time polymorphism (method overloading) by creating a `Calculator` class with multiple `add` methods that take different numbers or types of arguments (e.g., `add(int a, int b)`, `add(double a, double b)`).",
+                    "Using the `Animal` and `Dog` classes from Task 11, demonstrate runtime polymorphism by creating an `Animal` reference that points to a `Dog` object and calling the `makeSound()` method.",
+                    "Explain the difference between compile-time (static) polymorphism and runtime (dynamic) polymorphism in Java."
+                ]
+            },
+            {
+                "taskNumber": 13,
+                "taskTitle": "Abstraction: Abstract Classes and Methods",
+                "taskDescription": "Learners will learn about abstract classes and abstract methods, and when to use them to achieve abstraction.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Define an `abstract` Java class named `Vehicle` with an `abstract` method `start()` and a concrete method `stop()`.",
+                    "Create a concrete subclass `Car` that `extends` `Vehicle` and implements the `start()` method.",
+                    "Explain the primary purpose of an abstract class and an abstract method in Java, and describe a scenario where they would be necessary."
+                ]
+            },
+            {
+                "taskNumber": 14,
+                "taskTitle": "Interfaces",
+                "taskDescription": "Learners will understand interfaces, their purpose, how to implement them, and the differences between abstract classes and interfaces.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Define a Java `interface` named `Shape` with two methods: `calculateArea()` and `display()`. Both methods should be public and abstract by default.",
+                    "Create a class `Circle` that implements the `Shape` interface and provides concrete implementations for `calculateArea()` and `display()`.",
+                    "Compare and contrast the characteristics and use cases of abstract classes versus interfaces in Java."
+                ]
+            },
+            {
+                "taskNumber": 15,
+                "taskTitle": "Working with Strings",
+                "taskDescription": "Learners will explore the `String` class, common string methods, and string manipulation techniques.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Write a Java program that takes a string input, converts it to lowercase, and then counts how many times the character 'a' appears in it.",
+                    "Implement a Java program that checks if a given string is a palindrome (reads the same forwards and backwards) ignoring case.",
+                    "Create a Java program that concatenates two strings, then extracts a substring from the result, and prints all three strings."
+                ]
+            },
+            {
+                "taskNumber": 16,
+                "taskTitle": "Arrays",
+                "taskDescription": "Learners will learn to declare, initialize, and manipulate one-dimensional and multi-dimensional arrays.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Declare and initialize a one-dimensional integer array with five elements in Java, then write a loop to print each element.",
+                    "Create a Java program that calculates the average of all elements in a given integer array.",
+                    "Declare and initialize a 3x3 two-dimensional integer array in Java, and write code to print its elements in a matrix format."
+                ]
+            },
+            {
+                "taskNumber": 17,
+                "taskTitle": "Introduction to Collections Framework",
+                "taskDescription": "Learners will get an overview of the Java Collections Framework and practice with basic `List` (e.g., `ArrayList`), `Set` (e.g., `HashSet`), and `Map` (e.g., `HashMap`) interfaces and their common implementations.",
+                "estimatedTime": "4 hours",
+                "assignments": [
+                    "Write a Java program that creates an `ArrayList` of strings, adds five names, and then removes one name before printing the updated list.",
+                    "Implement a Java program that uses a `HashSet` to store a collection of unique integers, demonstrating that adding a duplicate element does not change the set's size.",
+                    "Create a Java program that uses a `HashMap` to store key-value pairs representing student IDs and their names, then retrieve and print the name of a specific student.",
+                    "Explain the primary differences in characteristics and typical use cases for `List`, `Set`, and `Map` interfaces in the Java Collections Framework."
+                ]
+            },
+            {
+                "taskNumber": 18,
+                "taskTitle": "Exception Handling",
+                "taskDescription": "Learners will learn about errors and exceptions, how to use `try-catch-finally` blocks, and the `throws` keyword for handling runtime issues gracefully.",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Write a Java program that attempts to access an array element out of bounds and handles the `ArrayIndexOutOfBoundsException` using a `try-catch` block.",
+                    "Implement a Java program that demonstrates the use of a `finally` block to ensure a cleanup message is always printed, regardless of whether an exception occurs in the `try` block.",
+                    "Explain the purpose of the `throws` keyword in a method signature and when it is appropriate to use it instead of a `try-catch` block."
+                ]
+            },
+            {
+                "taskNumber": 19,
+                "taskTitle": "Review of Core Java Concepts",
+                "taskDescription": "Learners will consolidate their understanding of all fundamental Java and OOP concepts and identify areas for further practice.",
+                "estimatedTime": "3 hours",
+                "assignments": [
+                    "Summarize the key benefits of using Object-Oriented Programming (OOP) principles in Java application development.",
+                    "Describe the difference between method overloading and method overriding, providing a scenario for when each would be used.",
+                    "Explain how the Java Collections Framework simplifies data management and provide examples of when to use an `ArrayList` versus a `HashMap`."
+                ]
+            },
+            {
+                "taskNumber": 20,
+                "taskTitle": "Preparing for Java Interviews: Common Topics",
+                "taskDescription": "Learners will understand typical questions asked in junior Java developer interviews covering OOP, data types, control flow, and basic collections.",
+                "estimatedTime": "2 hours",
+                "assignments": [
+                    "Explain the concept of encapsulation in Java and how you would implement it in a class.",
+                    "What is the difference between an `abstract class` and an `interface` in Java? When would you prefer one over the other?",
+                    "Describe the different types of access modifiers in Java and their visibility levels.",
+                    "How do you handle exceptions in Java? Provide an example demonstrating the `try`, `catch`, and `finally` blocks."
+                ]
+            }
+        ]
+    }
+}
