@@ -59,4 +59,52 @@ Requirements:
 inputVariables: ["title", "timeline", "understanding", "goal", "extraInfo"]
 })
 
-export {systemMessage, humanMessage}
+const humanMessageForChanges = new PromptTemplate({
+  template: `
+You are refining an existing learning roadmap overview.
+
+Original Topic Details:
+Topic Title:
+{title}
+
+Target Timeline:
+{timeline}
+
+Current Understanding:
+{understanding}
+
+Learning Goal:
+{goal}
+
+Additional Context:
+{extraInfo}
+
+Current AI Response (existing roadmap):
+{currentResponse}
+
+Requested Changes:
+{changesToMake}
+
+Instructions:
+- Update the existing roadmap based ONLY on the requested changes
+- Preserve unchanged sections from the current AI response
+- Clearly apply the requested modifications
+- Keep the roadmap high-level and structured
+- Maintain logical phases or weeks
+- Avoid implementation details or coding tasks
+- If a requested change conflicts with the timeline or goal, adjust gracefully
+- End with a short confirmation question asking the user to approve or request further changes
+`,
+inputVariables:[
+  "title",
+  "timeline",
+  "understanding",
+  "goal",
+  "extraInfo",
+  "currentResponse",
+  "changesToMake",
+]
+});
+
+
+export {systemMessage, humanMessage, humanMessageForChanges}

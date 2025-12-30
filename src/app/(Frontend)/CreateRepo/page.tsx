@@ -37,6 +37,7 @@ export default function CreateRepo() {
     const [understanding, setUnderstanding] = useState("");
     const [goal, setGoal] = useState("");
     const [extraInfo, setExtraInfo] = useState("");
+    const [changes, setChanges] = useState("");
     const [aiRoadmap, setAiRoadmap] = useState<null | string>(null);
     const [RepoStatus, setRepoStatus] = useState<number | null>(null);
 
@@ -109,49 +110,56 @@ export default function CreateRepo() {
         setRepoStatus(3);
     }
 
+    async function MakeChanges() {
+        if (changes.trim() === "") return;
+        if(!aiRoadmap) return;
+        // setAiRoadmap(null);
+        const data = {
+            topic,
+            timeline,
+            understanding,
+            goal,
+            addition_info: extraInfo,
+            aiRoadmap,
+            changesToMake: changes,
+        };
+        console.log("Making Changes", data);
+        try {
+            setAiRoadmap(null);
+            const prams = new URLSearchParams({
+                topic,
+                duration: timeline,
+                current_level: understanding,
+                goal,
+                addition_info: extraInfo,
+                changesToMake: changes,
+                currentResponse: aiRoadmap || "",
+            });
+            const eventSource = new EventSource(`/api/ChangeOverview?${prams}`);
+            eventSource.onmessage = (event) => {
+                if (JSON.parse(event.data).message === "Stream finished") {
+                    console.log("Stream finished");
+                    eventSource.close();
+                }
+                if (!JSON.parse(event.data).message) {
+                    console.log(JSON.parse(event.data));
+                    setAiRoadmap((prev) => {
+                        const text = JSON.parse(event.data)[0]?.kwargs?.content || "";
+                        return (prev ? prev : "") + text.split("*").join("") || "";
+                    });
+                }
+            };
+            setChanges("");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const steps = [
         { number: 1, title: "Topic Details", icon: "📚" },
         { number: 2, title: "Learning Path", icon: "🎯" },
         { number: 3, title: "Customization", icon: "⚙️" },
     ];
-
-    // Mock AI Response
-    const aiResponse = `Based on your inputs, here's your personalized learning roadmap for ${topic || "your topic"}:
-
-**Phase 1: Foundations (Weeks 1-2)**
-• Core concepts and syntax fundamentals
-• Basic data types and operations
-• Control flow and loops
-• Functions and methods
-
-**Phase 2: Intermediate Concepts (Weeks 3-4)**
-• Object-oriented programming principles
-• Data structures (Arrays, Lists, Stacks, Queues)
-• Algorithm basics and complexity analysis
-• Problem-solving patterns
-
-**Phase 3: Advanced Topics (Weeks 5-6)**
-• Trees and Graphs
-• Dynamic Programming
-• Advanced algorithms
-• System design basics
-
-**Phase 4: Practice & Projects (Weeks 7-8)**
-• LeetCode-style problem solving
-• Build 2-3 portfolio projects
-• Mock interviews
-• Code review and optimization
-
-**Daily Schedule:**
-• 2 hours of focused learning
-• 1 hour of coding practice
-• 30 mins of review and reflection
-
-**Resources Included:**
-• Curated video tutorials
-• Interactive coding challenges
-• Project templates
-• Interview prep questions`;
 
     if (RepoStatus) {
         return (
@@ -653,10 +661,15 @@ export default function CreateRepo() {
                                         <p className="text-gray-400 mb-4">Tell us what you'd like to modify in your learning path</p>
                                         <textarea
                                             rows={5}
+                                            value={changes}
+                                            onChange={(e) => setChanges(e.target.value)}
                                             className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-5 py-4 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
                                             placeholder={`Example:\n• Focus more on system design\n• Add more practical projects\n• Skip the basics and start from advanced topics\n• Include mock interview sessions`}
                                         ></textarea>
-                                        <button className="mt-2 text-white w-full bg-gray-700 py-2 rounded-lg cursor-pointer hover:bg-gray-600 transition-all font-semibold">
+                                        <button
+                                            onClick={MakeChanges}
+                                            className="mt-2 text-white w-full bg-gray-700 py-2 rounded-lg cursor-pointer hover:bg-gray-600 transition-all font-semibold"
+                                        >
                                             Apply Changes
                                         </button>
                                     </div>
