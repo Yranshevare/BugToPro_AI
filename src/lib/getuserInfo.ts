@@ -1,15 +1,19 @@
+import { supabase } from "./supabaseClient";
 
-export default function getUserInfo() {
-    const user = {name: "", email: "", error: ""};
-    
-    const data = localStorage.getItem(`sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_NAME}-auth-token`);
-    if (!data) {
+export default async function getUserInfo() {
+    const user = { name: "", email: "", error: "" };
+
+    const {
+        data: { session },
+    } = await supabase.auth.getSession();
+    if (!session) {
         user.error = "No user data found";
     }
+    if (session) {
+        const { name, email } = session.user.user_metadata;
+        user.name = name;
+        user.email = email;
+    }
 
-    const { name, email } = JSON.parse(data!).user.user_metadata;
-    user.name = name;
-    user.email = email;
-
-    return user
+    return user;
 }

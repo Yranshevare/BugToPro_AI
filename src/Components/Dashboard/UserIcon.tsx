@@ -13,6 +13,7 @@ import {
 } from "../ui/alert-dialog";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from '@tanstack/react-query'
 
 type User = {
     name: string;
@@ -21,6 +22,7 @@ type User = {
 export default function UserIcon({ user }: { user: User }) {
     const [pending, setPending] = useState(false);
     const router = useRouter();
+    const queryClient = useQueryClient()
     async function handleLogout() {
         setPending(true);
         const { error } = await supabase.auth.signOut({ scope: "local" });
@@ -29,6 +31,7 @@ export default function UserIcon({ user }: { user: User }) {
             console.error("Logout error:", error.message);
         } else {
             setPending(false);
+            queryClient.invalidateQueries({ queryKey: ['repo'] })
             router.push("/");
         }
     }
@@ -69,10 +72,10 @@ export default function UserIcon({ user }: { user: User }) {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel className="bg-gray-700 hover:bg-gray-600 border-0 text-white cursor-pointer">Cancel</AlertDialogCancel>
-                            <AlertDialogAction className="bg-red-500/60 hover:bg-red-500  border-0">
-                                <button disabled={pending} onClick={handleLogout} className=" cursor-pointer">
+                            <AlertDialogAction disabled={pending} onClick={handleLogout} className="bg-red-500/60 hover:bg-red-500  border-0">
+                                <div   className=" cursor-pointer">
                                     {pending ? "Logging out..." : "Logout"}
-                                </button>
+                                </div>
                             </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>

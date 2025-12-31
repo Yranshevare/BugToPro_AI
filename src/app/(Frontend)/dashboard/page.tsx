@@ -3,98 +3,74 @@ import TopicCard from "@/Components/Dashboard/TopicCard";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UserIcon from "@/Components/Dashboard/UserIcon";
-import getUserInfo  from "@/lib/getuserInfo";
+import getUserInfo from "@/lib/getuserInfo";
 import secureReq from "@/lib/secureReq";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "@/Components/Loader";
 
 interface Topic {
     id: string;
     name: string;
-    status: "In Progress" | "Completed" ;
+    status: "In Progress" | "Completed";
     progress: number;
     lastActivity: string;
 }
 
 export default function LearningDashboard() {
-    const [userinfo, setUserInfo] = useState({name:"", email:""});
+    const [userinfo, setUserInfo] = useState({ name: "", email: "" });
     const [activeTopics, setActiveTopics] = useState<Topic[]>([]);
     const [completedTopics, setCompletedTopics] = useState<Topic[]>([]);
 
     const router = useRouter();
+
+    const { data, isLoading, isError, error, isSuccess } = useQuery({
+        queryKey: ["repo"],
+        queryFn: fetchRepo,
+        staleTime: 1000 * 60 * 5, // (optional) how long data stays fresh
+    });
+
     
-    // const activeTopics: Topic[] = [
-    //     {
-    //         id: "1",
-    //         name: "Java Data Structures",
-    //         category: "Java",
-    //         status: "In Progress",
-    //         progress: 65,
-    //         lastActivity: "Last updated 2 days ago",
-    //     },
-    //     {
-    //         id: "2",
-    //         name: "Python Algorithms",
-    //         category: "Python",
-    //         status: "In Progress",
-    //         progress: 40,
-    //         lastActivity: "Last updated 5 days ago",
-    //     },
-    //     {
-    //         id: "3",
-    //         name: "JavaScript Fundamentals",
-    //         category: "JavaScript",
-    //         status: "Paused",
-    //         progress: 25,
-    //         lastActivity: "Last updated 2 weeks ago",
-    //     },
-    // ];
-
-    // const completedTopics: Topic[] = [
-    //     {
-    //         id: "4",
-    //         name: "Git Version Control",
-    //         category: "DevOps",
-    //         status: "Completed",
-    //         progress: 100,
-    //         lastActivity: "Completed 1 month ago",
-    //     },
-    //     {
-    //         id: "5",
-    //         name: "SQL Basics",
-    //         category: "Database",
-    //         status: "Completed",
-    //         progress: 100,
-    //         lastActivity: "Completed 2 months ago",
-    //     },
-    // ];
-
     useEffect(() => {
-        const user = getUserInfo()
-        if (user.error) {
-            router.push("/Login");
-            return;
+        if(isSuccess){
+            if (data) {
+                const active = data.filter((repo: any) => repo.status !== "Completed");
+                const completed = data.filter((repo: any) => repo.status === "Completed");
+                setActiveTopics(active);
+                setCompletedTopics(completed);
+            }
         }
-        setUserInfo({name: user.name, email: user.email});
+    }, [data]);
 
-        async function fetchRepo(){
-            const res = await secureReq('/api/Repo/GetAll');
-            console.log(res.data);
-            const data = res.data.data;
+    async function fetchRepo() {
+        const res = await secureReq({url:"/api/Repo/GetAll"});
+        // console.log(res.data);
+        const data = res.data.data;
 
-            const Repos = data.map((repo: any) => ({
-                id: repo.id,
-                name: repo.title,
-                status: repo.completedTasks === repo.noOfTasks ? "Completed" : "In Progress",
-                progress: Math.floor((repo.completedTasks / repo.noOfTasks) * 100),
-                lastActivity: `Last updated ${new Date(repo.updatedAt).toLocaleDateString()}`,
-            }));
-            const active = Repos.filter((repo: any) => repo.status !== "Completed");
-            const completed = Repos.filter((repo: any) => repo.status === "Completed");
-            setActiveTopics(active);
-            setCompletedTopics(completed);   
-        }
-        fetchRepo();
+        const Repos = data.map((repo: any) => ({
+            id: repo.id,
+            name: repo.title,
+            status: repo.completedTasks === repo.noOfTasks ? "Completed" : "In Progress",
+            progress: Math.floor((repo.completedTasks / repo.noOfTasks) * 100),
+            lastActivity: `Last updated ${new Date(repo.updatedAt).toLocaleDateString()}`,
+        }));
+        return Repos;
+    }
+    useEffect(() => {
+        (async function () {
+            const user = await getUserInfo();
+            if (user.error) {
+                router.push("/Auth");
+                return;
+            }
+            setUserInfo({ name: user.name, email: user.email });
+        })();
     }, []);
 
+    if (isLoading) return <Loader   />
+
+    if (isError) {
+        return <div>Error: {error.message}</div>;
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
@@ -115,7 +91,7 @@ export default function LearningDashboard() {
                         {/* <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold cursor-pointer">
                             {userinfo.name?.slice(0, 1).toLocaleUpperCase() || ""}
                         </div> */}
-                        <UserIcon user={userinfo}/>
+                        <UserIcon user={userinfo} />
                     </div>
                 </div>
             </nav>
@@ -167,9 +143,7 @@ export default function LearningDashboard() {
                         </div>
                         <h3 className="text-2xl font-bold text-white mb-2">You haven't added any learning topics yet.</h3>
                         <p className="text-gray-400 mb-8">Start your coding journey by adding your first topic</p>
-                        <button
-                            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2"
-                        >
+                        <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors inline-flex items-center gap-2">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>

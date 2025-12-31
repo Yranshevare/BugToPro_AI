@@ -5,6 +5,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { set } from "zod";
 import Task from "@/Components/ViewRepo/Task";
+import getUserInfo from "@/lib/getuserInfo";
+import { useQuery } from "@tanstack/react-query";
+import secureReq from "@/lib/secureReq";
+import Loader from "@/Components/Loader";
 
 interface Assignment {
     question: string;
@@ -28,174 +32,47 @@ interface Repo {
     completedTasks: number;
 }
 
-// Mock data
-const repo: Repo = {
-    title: "Java Data Structures & Algorithms",
-    noOfTasks: 8,
-    completedTasks: 3,
-    createdAt: new Date("2024-01-15"),
-    tasks: [
-        {
-            taskNumber: 1,
-            taskTitle: "Arrays and ArrayList Fundamentals",
-            taskDescription: "Learn the basics of arrays and dynamic arrays in Java. Understand memory allocation, indexing, and common operations.",
-            estimatedTime: "3 hours",
-            completed: true,
-            assignments: [
-                {
-                    question: "Implement a function to find the maximum element in an array",
-                    answer: "public int findMax(int[] arr) { int max = arr[0]; for(int i = 1; i < arr.length; i++) { if(arr[i] > max) max = arr[i]; } return max; }",
-                },
-                {
-                    question: "Write a method to reverse an array in-place",
-                    answer: "public void reverseArray(int[] arr) { int left = 0, right = arr.length - 1; while(left < right) { int temp = arr[left]; arr[left] = arr[right]; arr[right] = temp; left++; right--; } }",
-                },
-            ],
-        },
-        {
-            taskNumber: 2,
-            taskTitle: "Linked Lists Implementation",
-            taskDescription: "Build a singly linked list from scratch. Implement insertion, deletion, and traversal operations.",
-            estimatedTime: "4 hours",
-            completed: true,
-            assignments: [
-                {
-                    question: "Create a Node class and LinkedList class with basic operations",
-                    answer: "class Node { int data; Node next; Node(int data) { this.data = data; this.next = null; } }",
-                },
-                {
-                    question: "Implement a method to detect a cycle in a linked list",
-                    answer: null,
-                },
-            ],
-        },
-        {
-            taskNumber: 3,
-            taskTitle: "Stack and Queue Data Structures",
-            taskDescription: "Implement stack and queue using arrays and linked lists. Learn LIFO and FIFO principles.",
-            estimatedTime: "3.5 hours",
-            completed: true,
-            assignments: [
-                {
-                    question: "Implement a Stack using an array with push, pop, and peek operations",
-                    answer: null,
-                },
-            ],
-        },
-        {
-            taskNumber: 4,
-            taskTitle: "Binary Trees and Traversals",
-            taskDescription: "Understand tree structures and implement in-order, pre-order, and post-order traversals.",
-            estimatedTime: "5 hours",
-            completed: false,
-            assignments: [
-                {
-                    question: "Create a binary tree node and implement in-order traversal",
-                    answer: null,
-                },
-                {
-                    question: "Write a function to find the height of a binary tree",
-                    answer: null,
-                },
-            ],
-        },
-        {
-            taskNumber: 5,
-            taskTitle: "Hash Tables and HashMap",
-            taskDescription: "Learn about hash functions, collision resolution, and implement a basic hash table.",
-            estimatedTime: "4 hours",
-            completed: false,
-            assignments: [
-                {
-                    question: "Implement a simple hash table with linear probing",
-                    answer: null,
-                },
-            ],
-        },
-        {
-            taskNumber: 6,
-            taskTitle: "Sorting Algorithms",
-            taskDescription: "Master bubble sort, merge sort, quick sort, and understand time complexity analysis.",
-            estimatedTime: "6 hours",
-            completed: false,
-            assignments: [
-                {
-                    question: "Implement merge sort algorithm",
-                    answer: null,
-                },
-                {
-                    question: "Implement quick sort with pivot selection",
-                    answer: null,
-                },
-            ],
-        },
-        {
-            taskNumber: 7,
-            taskTitle: "Graph Algorithms - BFS and DFS",
-            taskDescription: "Learn graph representations and implement breadth-first and depth-first search.",
-            estimatedTime: "5 hours",
-            completed: false,
-            assignments: [
-                {
-                    question: "Implement BFS traversal for a graph",
-                    answer: null,
-                },
-            ],
-        },
-        {
-            taskNumber: 8,
-            taskTitle: "Dynamic Programming Basics",
-            taskDescription: "Introduction to dynamic programming with fibonacci, knapsack, and common DP patterns.",
-            estimatedTime: "7 hours",
-            completed: false,
-            assignments: [
-                {
-                    question: "Solve fibonacci using memoization",
-                    answer: null,
-                },
-                {
-                    question: "Implement 0/1 knapsack problem",
-                    answer: null,
-                },
-            ],
-        },
-    ],
-};
-
 export default function page({ params }: { params: Promise<{ id: string }> }) {
-    
     const [userinfo, setUserInfo] = useState({ name: "", email: "" });
     const [repoData, setRepoData] = useState<Repo | null>(null);
+    const [id, setId] = useState<string | null>(null);
 
     const router = useRouter();
 
+    const { data, isLoading, isError, error, isSuccess } = useQuery({
+        queryKey: [`task-${id}`],
+        queryFn: fetchRepo,
+        enabled: !!id,
+        staleTime: 1000 * 60 * 5, // (optional) how long data stays fresh
+    });
+
+    async function fetchRepo() {
+        const res = await secureReq({ url: "/api/Repo/GetOne", params: `id=${(await params).id}` });
+        console.log(res.data.data);
+        return res.data.data;
+    }
+
+    useEffect(() => {
+        if (isSuccess) {
+            if (data) {
+                setRepoData({ ...data, createdAt: new Date(data.createdAt) });
+            }
+        }
+    }, [data]);
+
     useEffect(() => {
         (async function () {
-            const { id } = await params;
-            console.log(id);
-
-            const data = localStorage.getItem(`sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_NAME}-auth-token`);
-            if (!data) {
-                router.replace("/Auth");
+            setId((await params).id);
+            const user = await getUserInfo();
+            if (user.error) {
+                router.push("/Auth");
                 return;
             }
-
-            const { name, email } = JSON.parse(data!).user.user_metadata;
-            setUserInfo({ name: name, email: email });
-
-            setRepoData(repo);
+            setUserInfo({ name: user.name, email: user.email });
         })();
     }, []);
 
-    const progressPercentage = (repo.completedTasks / repo.noOfTasks) * 100;
-
-    
-
-    if (!repoData) {
-        return (
-            <div>loading</div>
-        )
-    }
+    if (!repoData) return <Loader/>
 
     return (
         <div className="min-h-screen bg-gray-950">
@@ -274,7 +151,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                     </div>
                     <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm border border-purple-500/20 rounded-2xl p-5">
                         <div className="text-purple-400 text-sm font-medium mb-1">Progress</div>
-                        <div className="text-3xl font-bold text-white">{Math.round(progressPercentage)}%</div>
+                        <div className="text-3xl font-bold text-white">{Math.round((repoData.completedTasks / repoData.noOfTasks) * 100)}%</div>
                     </div>
                 </div>
 
@@ -290,7 +167,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                         <div className="relative w-full bg-gray-700/50 rounded-full h-4 overflow-hidden">
                             <div
                                 className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full transition-all duration-500"
-                                style={{ width: `${progressPercentage}%` }}
+                                style={{ width: `${(repoData.completedTasks / repoData.noOfTasks) * 100}%` }}
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent animate-pulse"></div>
                             </div>

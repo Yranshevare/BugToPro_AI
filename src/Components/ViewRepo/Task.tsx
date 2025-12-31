@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 interface Assignment {
     question: string;
     answer?: string | null;
+    explanation?: string | null;
 }
 
 interface Task {
@@ -22,7 +23,7 @@ export default function Task({ task }: { task: Task }) {
     const router = useRouter();
 
     const params = useParams();
-    console.log(params.id);
+    // console.log(params.id);
 
 
     function handleTaskClick() {
