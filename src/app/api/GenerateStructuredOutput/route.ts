@@ -5,6 +5,7 @@ import fs from "fs/promises";
 import { supabaseServer } from "@/lib/supabaseServer";
 import prisma from "@/lib/prisma";
 
+
 export async function GET(req: NextRequest) {
     try {
         const roadmap = await req.nextUrl.searchParams.get("roadmap");
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest) {
 
         const stream = new ReadableStream({
             async start(controller) {
-                controller.enqueue(`data: {"message": "Stream started"}\n\n`);
+                // controller.enqueue(`data: {"message": "Stream started"}\n\n`);
                 // const initialState = {
                 //     input: roadmap,
                 // }
@@ -41,26 +42,31 @@ export async function GET(req: NextRequest) {
                 const data = await fs.readFile("src/app/api/GenerateStructuredOutput/response.json", "utf-8");
                 const res = JSON.parse(data).data;
 
-                res.output.forEach((task: any, index: number) => {
+                const tasks = res.output.map((task: any, index: number) => {
                     // task.asg == ['que1, que2'] to task.asg = [{question: 'que1'}, {question: 'que2'}]
                     const asgArray = task.assignments.map((asgItem: string) => ({ question: asgItem }));
                     task.assignments = asgArray;
+                    return { ...task };
                 });
 
-                await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay for llm call
+                // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay for llm call
+                // console.log(tasks);
 
                 controller.enqueue(`data: {"message":"convert the data to json"}\n\n`);
 
-                const savedData = await prisma.repo.create({
-                    data: {
-                        title: title || "Untitled Repo",
-                        user: { name: user.user_metadata.name, email: user.user_metadata.email, id: user.id },
-                        tasks: res.output,
-                    },
-                });
-                console.log("Saved data to DB:", savedData.id);
+                // const savedData = await prisma.repo.create({
+                //     data: {
+                //         title: title || "Untitled Repo",
+                //         user: { name: user.user_metadata.name, email: user.user_metadata.email, id: user.id },
+                //         tasks: tasks,
+                //         noOfTasks: tasks.length,
+                //     },
+                // });
+                // console.log("Saved data to DB:", savedData.id);
 
-                controller.enqueue(`data: {"message": "Stream finished", "id": "${savedData.id}"}\n\n`);
+                const id = '6954e6ef3766b0c8d1f4679c'
+
+                controller.enqueue(`data: {"message": "Stream finished", "id": "${id}"}\n\n`);
                 controller.close();
             },
 

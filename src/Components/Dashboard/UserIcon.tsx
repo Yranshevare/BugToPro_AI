@@ -51,14 +51,13 @@ export default function UserIcon({ user }: { user: User }) {
                 </div>
 
                 <AlertDialog>
-                    <AlertDialogTrigger className="w-full">
+                    <AlertDialogTrigger disabled={pending} className="w-full">
                         <div className="flex justify-center items-center">
-                            <button
-                                disabled={pending}
+                            <div
                                 className=" text-white font-semibold bg-red-500/60 hover:bg-red-500 cursor-pointer w-full py-2 rounded-lg"
                             >
                                 {pending ? "Logging out..." : "Logout"}
-                            </button>
+                            </div>
                         </div>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-gray-800 border-gray-700">

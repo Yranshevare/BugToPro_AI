@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { useForm } from "react-hook-form";
 import { Controller } from "react-hook-form";
-import { set, z } from "zod";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { CheckCircle, LoaderCircle } from "lucide-react";
@@ -18,9 +18,9 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/Components/ui/alert-dialog";
-import axios from "axios";
 import message from "./response";
 import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
 
 const schema = z.object({
     topic: z.string().min(1, "please provide a topic"),
@@ -41,6 +41,8 @@ export default function CreateRepo() {
     const [changes, setChanges] = useState("");
     const [aiRoadmap, setAiRoadmap] = useState<null | string>(null);
     const [RepoStatus, setRepoStatus] = useState<number | null>(null);
+
+    const router = useRouter();
 
     const {
         control,
@@ -120,6 +122,8 @@ export default function CreateRepo() {
                     console.log("Stream finished");
                     eventSource.close();
                     setRepoStatus(3);
+                    router.push(`/viewRepo/${JSON.parse(event.data).id}`);
+                    
                 }
             };
             eventSource.onerror = (error) => {

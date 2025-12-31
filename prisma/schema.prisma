@@ -23,6 +23,7 @@ type user{
 type asg{
     question String 
     answer String?
+    explanation String?
 }
 
 type task{
@@ -31,6 +32,7 @@ type task{
     taskDescription String
     estimatedTime String
     assignments asg[]
+    completed Boolean @default(false)
 }
 
 model Repo {
@@ -40,4 +42,6 @@ model Repo {
     tasks       task[]
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
+    noOfTasks  Int      
+    completedTasks Int  @default(0)
 }
