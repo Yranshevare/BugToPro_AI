@@ -33,14 +33,14 @@ export async function GET(req: NextRequest) {
 
         const stream = new ReadableStream({
             async start(controller) {
-                // controller.enqueue(`data: {"message": "Stream started"}\n\n`);
-                // const initialState = {
-                //     input: roadmap,
-                // }
+                controller.enqueue(`data: {"message": "Stream started"}\n\n`);
+                const initialState = {
+                    input: roadmap,
+                }
 
-                // const res = await GenerateStructuredOutputWorkflow.invoke(initialState);
-                const data = await fs.readFile("src/app/api/GenerateStructuredOutput/response.json", "utf-8");
-                const res = JSON.parse(data).data;
+                const res = await GenerateStructuredOutputWorkflow.invoke(initialState);
+                // const data = await fs.readFile("src/app/api/GenerateStructuredOutput/response.json", "utf-8");
+                // const res = JSON.parse(data).data;
 
                 const tasks = res.output.map((task: any, index: number) => {
                     // task.asg == ['que1, que2'] to task.asg = [{question: 'que1'}, {question: 'que2'}]
@@ -54,19 +54,19 @@ export async function GET(req: NextRequest) {
 
                 controller.enqueue(`data: {"message":"convert the data to json"}\n\n`);
 
-                // const savedData = await prisma.repo.create({
-                //     data: {
-                //         title: title || "Untitled Repo",
-                //         user: { name: user.user_metadata.name, email: user.user_metadata.email, id: user.id },
-                //         tasks: tasks,
-                //         noOfTasks: tasks.length,
-                //     },
-                // });
-                // console.log("Saved data to DB:", savedData.id);
+                const savedData = await prisma.repo.create({
+                    data: {
+                        title: title || "Untitled Repo",
+                        userName: user.user_metadata.name,
+                        userEmail: user.user_metadata.email,
+                        userId: user.id,
+                        tasks: tasks,
+                        noOfTasks: tasks.length,
+                    },
+                });
+                console.log("Saved data to DB:", savedData.id);
 
-                const id = '6954e6ef3766b0c8d1f4679c'
-
-                controller.enqueue(`data: {"message": "Stream finished", "id": "${id}"}\n\n`);
+                controller.enqueue(`data: {"message": "Stream finished", "id": "${savedData.id}"}\n\n`);
                 controller.close();
             },
 

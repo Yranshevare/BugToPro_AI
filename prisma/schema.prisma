@@ -14,11 +14,6 @@ datasource db {
   url = env("DATABASE_URL") // ignore this error 
 }
 
-type user{
-    name String
-    email String
-    id String
-}
 
 type asg{
     question String 
@@ -38,7 +33,9 @@ type task{
 model Repo {
     id          String   @id @default(auto()) @map("_id") @db.ObjectId
     title       String
-    user        user
+    userName    String
+    userEmail   String
+    userId      String        
     tasks       task[]
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt

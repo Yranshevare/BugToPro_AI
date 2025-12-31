@@ -62,28 +62,28 @@ export default function CreateRepo() {
 
         setIsFormSubmitted(true);
         try {
-            // const prams = new URLSearchParams({
-            //     topic: data.topic,
-            //     duration: data.duration,
-            //     current_level: data.current_level,
-            //     goal: data.goal,
-            //     addition_info: data.addition_info,
-            // });
-            // const eventSource = new EventSource(`/api/GetOverview?${prams}`);
-            // eventSource.onmessage = (event) => {
-            //     if (JSON.parse(event.data).message === "Stream finished") {
-            //         console.log("Stream finished");
-            //         eventSource.close();
-            //     }
-            //     if (!JSON.parse(event.data).message) {
-            //         console.log(JSON.parse(event.data));
-            //         setAiRoadmap((prev) => {
-            //             const text = JSON.parse(event.data)[0]?.kwargs?.content || "";
-            //             return (prev ? prev : "") + text.split("*").join("") || ""
-            //         });
-            //     }
-            // };
-            setAiRoadmap(message.split("*").join("") || "");
+            const prams = new URLSearchParams({
+                topic: data.topic,
+                duration: data.duration,
+                current_level: data.current_level,
+                goal: data.goal,
+                addition_info: data.addition_info,
+            });
+            const eventSource = new EventSource(`/api/GetOverview?${prams}`);
+            eventSource.onmessage = (event) => {
+                if (JSON.parse(event.data).message === "Stream finished") {
+                    console.log("Stream finished");
+                    eventSource.close();
+                }
+                if (!JSON.parse(event.data).message) {
+                    console.log(JSON.parse(event.data));
+                    setAiRoadmap((prev) => {
+                        const text = JSON.parse(event.data)[0]?.kwargs?.content || "";
+                        return (prev ? prev : "") + text.split("*").join("") || ""
+                    });
+                }
+            };
+            // setAiRoadmap(message.split("*").join("") || "");
         } catch (error) {
             console.log(error);
         }

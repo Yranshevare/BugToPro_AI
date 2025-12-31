@@ -1,11 +1,19 @@
 import React from "react";
+import { useRouter } from "next/navigation";
 
-export default function TopicCard({topic}: any) {
+interface Topic {
+    id: string;
+    name: string;
+    status: "In Progress" | "Completed" ;
+    progress: number;
+    lastActivity: string;
+}
+
+export default function TopicCard({topic}: {topic: Topic}) {
+    const router = useRouter();
 
     const getStatusColor = (status: string) => {
     switch (status) {
-      case 'In Progress':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
       case 'Completed':
         return 'bg-green-500/20 text-green-400 border-green-500/30';
       case 'Paused':
@@ -17,7 +25,7 @@ export default function TopicCard({topic}: any) {
 
   
     return (
-        <div key={topic.id} className={`${topic.status === 'Completed'? "bg-gray-800/50 hover:bg-gray-800/80" : "bg-gray-800 hover:border-blue-600"}  border border-gray-700 rounded-xl p-6  transition-all`}>
+        <div key={topic.id} onClick={()=>router.push(`/viewRepo/${topic.id}`)} className={`${topic.status === 'Completed'? "bg-gray-800/50 hover:bg-gray-800/80" : "bg-gray-800 hover:border-blue-600"}  border border-gray-700 rounded-xl p-6  transition-all`}>
             <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                     <h3 className="text-xl font-semibold text-white mb-2">{topic.name}</h3>

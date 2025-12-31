@@ -1,81 +1,100 @@
 "use client";
 import TopicCard from "@/Components/Dashboard/TopicCard";
-import { supabase } from "@/lib/supabaseClient";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import UserIcon from "@/Components/Dashboard/UserIcon";
+import getUserInfo  from "@/lib/getuserInfo";
+import secureReq from "@/lib/secureReq";
 
 interface Topic {
     id: string;
     name: string;
-    category: string;
-    status: "In Progress" | "Completed" | "Paused";
+    status: "In Progress" | "Completed" ;
     progress: number;
     lastActivity: string;
 }
 
 export default function LearningDashboard() {
     const [userinfo, setUserInfo] = useState({name:"", email:""});
+    const [activeTopics, setActiveTopics] = useState<Topic[]>([]);
+    const [completedTopics, setCompletedTopics] = useState<Topic[]>([]);
 
     const router = useRouter();
     
-    const activeTopics: Topic[] = [
-        {
-            id: "1",
-            name: "Java Data Structures",
-            category: "Java",
-            status: "In Progress",
-            progress: 65,
-            lastActivity: "Last updated 2 days ago",
-        },
-        {
-            id: "2",
-            name: "Python Algorithms",
-            category: "Python",
-            status: "In Progress",
-            progress: 40,
-            lastActivity: "Last updated 5 days ago",
-        },
-        {
-            id: "3",
-            name: "JavaScript Fundamentals",
-            category: "JavaScript",
-            status: "Paused",
-            progress: 25,
-            lastActivity: "Last updated 2 weeks ago",
-        },
-    ];
+    // const activeTopics: Topic[] = [
+    //     {
+    //         id: "1",
+    //         name: "Java Data Structures",
+    //         category: "Java",
+    //         status: "In Progress",
+    //         progress: 65,
+    //         lastActivity: "Last updated 2 days ago",
+    //     },
+    //     {
+    //         id: "2",
+    //         name: "Python Algorithms",
+    //         category: "Python",
+    //         status: "In Progress",
+    //         progress: 40,
+    //         lastActivity: "Last updated 5 days ago",
+    //     },
+    //     {
+    //         id: "3",
+    //         name: "JavaScript Fundamentals",
+    //         category: "JavaScript",
+    //         status: "Paused",
+    //         progress: 25,
+    //         lastActivity: "Last updated 2 weeks ago",
+    //     },
+    // ];
 
-    const completedTopics: Topic[] = [
-        {
-            id: "4",
-            name: "Git Version Control",
-            category: "DevOps",
-            status: "Completed",
-            progress: 100,
-            lastActivity: "Completed 1 month ago",
-        },
-        {
-            id: "5",
-            name: "SQL Basics",
-            category: "Database",
-            status: "Completed",
-            progress: 100,
-            lastActivity: "Completed 2 months ago",
-        },
-    ];
+    // const completedTopics: Topic[] = [
+    //     {
+    //         id: "4",
+    //         name: "Git Version Control",
+    //         category: "DevOps",
+    //         status: "Completed",
+    //         progress: 100,
+    //         lastActivity: "Completed 1 month ago",
+    //     },
+    //     {
+    //         id: "5",
+    //         name: "SQL Basics",
+    //         category: "Database",
+    //         status: "Completed",
+    //         progress: 100,
+    //         lastActivity: "Completed 2 months ago",
+    //     },
+    // ];
 
     useEffect(() => {
-        const data = localStorage.getItem(`sb-${process.env.NEXT_PUBLIC_SUPABASE_PROJECT_NAME}-auth-token`);
-        if(!data) {
-            router.replace("/Auth");
+        const user = getUserInfo()
+        if (user.error) {
+            router.push("/Login");
             return;
         }
+        setUserInfo({name: user.name, email: user.email});
 
-        const {name, email} = JSON.parse(data!).user.user_metadata;
-        setUserInfo({name: name, email: email});
-        console.log(name, email);
+        async function fetchRepo(){
+            const res = await secureReq('/api/Repo/GetAll');
+            console.log(res.data);
+            const data = res.data.data;
+
+            const Repos = data.map((repo: any) => ({
+                id: repo.id,
+                name: repo.title,
+                status: repo.completedTasks === repo.noOfTasks ? "Completed" : "In Progress",
+                progress: Math.floor((repo.completedTasks / repo.noOfTasks) * 100),
+                lastActivity: `Last updated ${new Date(repo.updatedAt).toLocaleDateString()}`,
+            }));
+            const active = Repos.filter((repo: any) => repo.status !== "Completed");
+            const completed = Repos.filter((repo: any) => repo.status === "Completed");
+            setActiveTopics(active);
+            setCompletedTopics(completed);   
+        }
+        fetchRepo();
     }, []);
+
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
