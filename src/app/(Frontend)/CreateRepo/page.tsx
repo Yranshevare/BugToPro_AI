@@ -18,7 +18,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/Components/ui/alert-dialog";
-import message from "./response";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 

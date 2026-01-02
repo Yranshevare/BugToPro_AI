@@ -49,7 +49,6 @@ export async function GET(req: NextRequest) {
                     return { ...task };
                 });
 
-                // await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay for llm call
                 // console.log(tasks);
 
                 controller.enqueue(`data: {"message":"convert the data to json"}\n\n`);

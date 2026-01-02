@@ -65,6 +65,8 @@ Instead of passive learning, users submit real solutions and receive actionable 
 
 Follow these steps to run **BugToPro AI** locally.
 
+> Note: this is just a prototype and will need some configuration to deploy into production, in the mean time feel free to explore the project code
+
 
 
 ### 1️⃣ Prerequisites
