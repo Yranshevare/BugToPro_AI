@@ -8,6 +8,7 @@ import { set } from "zod";
 import axios from "axios";
 import secureReq from "@/lib/secureReq";
 import { supabase } from "@/lib/supabaseClient";
+import RenderMd from "@/Components/RenderMd";
 
 interface Assignment {
     question: string;
@@ -345,7 +346,10 @@ export default function page({ params }: { params: Promise<{ task: string }> }) 
                                         </div>
                                     </div>
                                     <div className="bg-gray-900/50 border border-gray-700/50 rounded-xl p-5 h-[60vh] overflow-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-gray-800/50 [&::-webkit-scrollbar-thumb]:bg-gray-600/50">
-                                        <div className="text-gray-300 leading-relaxed whitespace-pre-line">{currentAsg.explanation}</div>
+                                        <div className="text-gray-300 leading-relaxed whitespace-pre-line">
+                                            <RenderMd data={currentAsg.explanation} />
+                                            {/* {currentAsg.explanation} */}
+                                        </div>
                                     </div>
                                     <div className="mt-4 flex gap-2">
                                         <button className="flex-1 bg-gray-700/50 hover:bg-gray-700 border border-gray-600 text-white py-2.5 rounded-lg font-medium transition-all flex items-center justify-center gap-2">
