@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select";
 import { useForm } from "react-hook-form";
 import { Controller } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { CheckCircle, LoaderCircle } from "lucide-react";
@@ -41,6 +41,7 @@ export default function CreateRepo() {
     const [changes, setChanges] = useState("");
     const [aiRoadmap, setAiRoadmap] = useState<null | string>(null);
     const [RepoStatus, setRepoStatus] = useState<number | null>(null);
+    const [repoInitializedText, setRepoInitializedText] = useState<string>("Initializing the repository");
 
     const router = useRouter();
 
@@ -79,7 +80,7 @@ export default function CreateRepo() {
                     console.log(JSON.parse(event.data));
                     setAiRoadmap((prev) => {
                         const text = JSON.parse(event.data)[0]?.kwargs?.content || "";
-                        return (prev ? prev : "") + text.split("*").join("") || ""
+                        return (prev ? prev : "") + text.split("*").join("") || "";
                     });
                 }
             };
@@ -109,7 +110,13 @@ export default function CreateRepo() {
         try {
             setRepoStatus(1);
 
-            const { data: { session } } = await supabase.auth.getSession();
+            setTimeout(() => {
+                setRepoInitializedText("This process may take a few minutes");
+            }, 7000);
+
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
 
             const eventSource = new EventSource(`/api/GenerateStructuredOutput?roadmap=${aiRoadmap}&token=${session?.access_token}&title=${topic}`);
 
@@ -123,13 +130,12 @@ export default function CreateRepo() {
                     eventSource.close();
                     setRepoStatus(3);
                     router.push(`/viewRepo/${JSON.parse(event.data).id}`);
-                    
                 }
             };
             eventSource.onerror = (error) => {
                 console.error("EventSource failed:", error);
                 eventSource.close();
-            }
+            };
         } catch (error) {
             console.log(error);
         }
@@ -186,6 +192,7 @@ export default function CreateRepo() {
         { number: 3, title: "Customization", icon: "⚙️" },
     ];
 
+
     if (RepoStatus) {
         return (
             <div className="min-h-screen bg-gray-950 flex  justify-center items-center">
@@ -202,7 +209,7 @@ export default function CreateRepo() {
                                     <>
                                         <LoaderCircle className="animate-spin text-white" />
                                         <div className="flex">
-                                            <p className="text-white">Initializing Repository</p>
+                                            <p className="text-white">{repoInitializedText}</p>
                                             <div className="flex font-bold ml-1 space-x-1">
                                                 <span className="dot animate-dot delay-0 text-white">.</span>
                                                 <span className="dot animate-dot delay-300 text-white">.</span>

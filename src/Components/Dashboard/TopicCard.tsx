@@ -1,31 +1,58 @@
 import React from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
+import axios from "axios";
+import { useQueryClient } from '@tanstack/react-query'
 
 interface Topic {
     id: string;
     name: string;
-    status: "In Progress" | "Completed" ;
+    status: "In Progress" | "Completed";
     progress: number;
     lastActivity: string;
 }
 
-export default function TopicCard({topic}: {topic: Topic}) {
+export default function TopicCard({ topic }: { topic: Topic }) {
     const router = useRouter();
-
+    const queryClient = useQueryClient()
+// console.log(topic);
     const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Completed':
-        return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'Paused':
-        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      default:
-        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
-    }
-  };
+        switch (status) {
+            case "Completed":
+                return "bg-green-500/20 text-green-400 border-green-500/30";
+            case "Paused":
+                return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
+            default:
+                return "bg-gray-500/20 text-gray-400 border-gray-500/30";
+        }
+    };
 
-  
+    async function handleDelete() {
+        try {
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+            const token = session?.access_token;
+
+            if (!token) return;
+
+            const res = await axios.delete(`/api/Repo/Delete?repoId=${topic.id}&token=${token}`);
+            console.log(res);
+            queryClient.invalidateQueries({ queryKey: ['repo'] })
+            router.refresh();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
-        <div key={topic.id} onClick={()=>router.push(`/viewRepo/${topic.id}`)} className={`${topic.status === 'Completed'? "bg-gray-800/50 hover:bg-gray-800/80" : "bg-gray-800 hover:border-blue-600"}  border border-gray-700 rounded-xl p-6  transition-all`}>
+        <div
+            key={topic.id}
+            onClick={() => router.push(`/viewRepo/${topic.id}`)}
+            className={`${
+                topic.status === "Completed" ? "bg-gray-800/50 hover:bg-gray-800/80" : "bg-gray-800 hover:border-blue-600"
+            }  border border-gray-700 rounded-xl p-6  transition-all`}
+        >
             <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                     <h3 className="text-xl font-semibold text-white mb-2">{topic.name}</h3>
@@ -40,7 +67,9 @@ export default function TopicCard({topic}: {topic: Topic}) {
                 </div>
                 <div className="w-full bg-gray-700 rounded-full h-2">
                     <div
-                        className={`${topic.status === 'Completed'? "bg-green-500/20" : "bg-gradient-to-r from-blue-500 to-purple-600"}  h-2 rounded-full transition-all`}
+                        className={`${
+                            topic.status === "Completed" ? "bg-green-500/20" : "bg-gradient-to-r from-blue-500 to-purple-600"
+                        }  h-2 rounded-full transition-all`}
                         style={{ width: `${topic.progress}%` }}
                     ></div>
                 </div>
@@ -49,12 +78,20 @@ export default function TopicCard({topic}: {topic: Topic}) {
             <p className="text-xs text-gray-500 mb-4">{topic.lastActivity}</p>
 
             <div className="flex gap-2">
-                <button className={`flex-1 ${topic.status === 'Completed'? "bg-gray-700 hover:bg-gray-600" : "bg-blue-600 hover:bg-blue-700"}   text-white py-2 rounded-lg font-medium transition-colors`}>
-                    {
-                        topic.status === 'Completed'? "Review" : "Continue"
-                    }
+                <button
+                    className={`flex-1 ${
+                        topic.status === "Completed" ? "bg-gray-700 hover:bg-gray-600" : "bg-blue-600 hover:bg-blue-700"
+                    }   text-white py-2 rounded-lg font-medium transition-colors`}
+                >
+                    {topic.status === "Completed" ? "Review" : "Continue"}
                 </button>
-                <button className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors">
+                <button
+                    onClick={(event) => {
+                        event.stopPropagation(); // <-- stops parent onClick
+                        handleDelete();
+                    }}
+                    className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded-lg transition-colors"
+                >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                             strokeLinecap="round"
