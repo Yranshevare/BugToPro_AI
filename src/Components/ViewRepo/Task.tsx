@@ -28,7 +28,7 @@ export default function Task({ task }: { task: Task }) {
 
     function handleTaskClick() {
         console.log("Task clicked:", task);
-        const payload = encodeURIComponent(JSON.stringify({...task, repoId: params.id}));
+        const payload = encodeURIComponent(JSON.stringify({taskNumber: task.taskNumber, repoId: params.id}));
         router.push(`/viewTask/${payload}`);
     }
     return (
